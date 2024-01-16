@@ -134,7 +134,8 @@ In order to figure out which book reviews correspond with which titles,
 we will have to *join* the `goodreads_reviews_dedup.json.gz` and `goodreads_books.json.gz` files together.
 Joining datasets is a notoriously difficult and time consuming process.
 We will spend a considerable amount of time in this class discussing how to join correctly and efficiently.
-For this lab, we will use a simple, manual, and inefficient process.
+For this lab, we will use a simple, manual, and slow method.
+(Later in the course, we'll learn more complicated, automatic, and faster methods.)
 
 ## Part 1: Convert a book id into a title.
 

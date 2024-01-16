@@ -1,4 +1,4 @@
-# Lab Goodreads 2: AI Review Summaries
+# Lab: AI Review Summaries
 
 Amazon recently launched a new service where [AI models summarize product reviews](https://www.aboutamazon.com/news/amazon-ai/amazon-improves-customer-reviews-with-generative-ai).
 For example, here's the AI generated review for [this package of uranium ore](https://www.amazon.com/dp/B000796XXM):

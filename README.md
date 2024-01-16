@@ -1,4 +1,4 @@
-# Lab Goodreads 2: JSON + Large Language Models
+# Lab Goodreads 2: AI Review Summaries
 
 Amazon recently launched a new service where [AI models summarize product reviews](https://www.aboutamazon.com/news/amazon-ai/amazon-improves-customer-reviews-with-generative-ai).
 For example, here's the AI generated review for [this package of uranium ore](https://www.amazon.com/dp/B000796XXM):
@@ -6,21 +6,23 @@ For example, here's the AI generated review for [this package of uranium ore](ht
 <img src=amazon-review-uranium.png width=100%>
 
 In this lab, you will create your own version of this service.
-In particular, you will use AI to summarize book reviews scraped from the website <https://www.goodreads.com/>.
-This dataset contains all activity on this website between 2006-2017.
+You will use AI to summarize book reviews from the website <https://www.goodreads.com/>.
+We'll use [a public dataset](https://mengtingwan.github.io/data/goodreads.html) that contains all activity on this website between 2006-2017.
 It's approximately 30GB of data, and contains 15.7 million user reviews of 2.3 million books.
 
+The hard part of this project will be to find the reviews for the particular books we're interested amidst all of this data.
+To accomplish this, we will review basic shell commands.
 <!--
 Dataset URL at https://mengtingwan.github.io/data/goodreads.html from 2017
 
 https://datarepo.eng.ucsd.edu/mcauley_group/gdrive/goodreads/goodreads_reviews_dedup.json.gz
--->
 
 **Learning Objectives:**
 
 1. give you an overview of the bigdata course,
 1. review how to work with csv and json files,
 1. review basic python, terminal, and sql programming.
+-->
 
 ## Part 0: Exploring the reviews.
 
@@ -499,6 +501,9 @@ You won't be able to complete the next section until you've completed the exerci
 
 ## Part 3: Generating the Review Summaries
 
+*This section to be added later.*
+
+<!--
 The Mistral Large Language Models
 
 Modern AIs like ChatGPT are more generally called *large language models* or *LLMs*.
@@ -607,6 +612,7 @@ but at the expense of a longer runtime.
 With 20 reviews, the command takes me 4 minutes to run on an un-loaded llambdaserver.
 
 ## Submission
+-->
 
 <!--
 $ echo "[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book. The reviews are: $(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin

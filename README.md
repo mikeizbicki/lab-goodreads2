@@ -1,14 +1,14 @@
 # Lab Goodreads 2: JSON + Large Language Models
 
-**Overview:**
-
 Amazon recently launched a new service where [AI models summarize product reviews](https://www.aboutamazon.com/news/amazon-ai/amazon-improves-customer-reviews-with-generative-ai).
+For example, here's the AI generated review for [this package of uranium ore](https://www.amazon.com/dp/B000796XXM):
+
+<img src=amazon-review-uranium.png width=100%>
 
 In this lab, you will create your own version of this service.
 In particular, you will use AI to summarize book reviews scraped from the website <https://www.goodreads.com/>.
 This dataset contains all activity on this website between 2006-2017.
-It's approximately 30GB of data.
-15.7 million user reviews of 2.3 million books.
+It's approximately 30GB of data, and contains 15.7 million user reviews of 2.3 million books.
 
 <!--
 Dataset URL at https://mengtingwan.github.io/data/goodreads.html from 2017

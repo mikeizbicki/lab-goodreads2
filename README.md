@@ -306,7 +306,8 @@ $ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"title": "The Name o
 ```
 This counts all of the entries in the `goodreads_books.json.gz` file with a `title` field equal to `The Name of the Wind`.
 It turns out that there are 4 different entries in `goodreads_books.json.gz` for the title *The Name of the Wind*, each with their own `book_id`.
-These 4 entries correspond to different editions of the book (there's a hardcover, a softcover, an audiobook, and a "Tenth Anniversary Edition" hardcover).
+These 4 entries correspond to different editions of the book.
+(There's a hardcover, a softcover, an audiobook, and a "Tenth Anniversary Edition" hardcover.)
 
 Our command to count the number of entries took a long time to run because it needed to loop over the entire dataset.
 To save time in the future, it is often good practice to store the results of intermediate steps into a file.
@@ -324,8 +325,12 @@ And we can do other processing on these books much more efficiently.
 For example, we can extract the title from each of these books with the command
 ```
 $ cat notw.json | jq '.title'
+"The Name of the Wind"
+"The Name of the Wind"
+"The Name of the Wind"
+"The Name of the Wind"
 ```
-and notice that they are all the same.
+Notice that they are all the same and match our regex.
 The differences between each entry are in the `format` and `edition_information` fields:
 ```
 $ cat notw.json | jq '.format'
@@ -347,7 +352,8 @@ $ cat notw.json | jq '.book_id'
 "12276953"
 "34347493"
 ```
-In our task, we want to summarize how all readers of the book feel about the book, regardless of the edition that they read.
+Recall that our overall goal is to get a summary of how readers review the book.
+For this task, we'll want to summarize all the reviews for all editions, and not just a particular edition.
 Therefore, we'll need to find the reviews for each of these `book_id`s.
 
 ### Part 2.b: Computing the Join
@@ -358,6 +364,7 @@ so we need to write a `grep` command to complete this join.
 
 One way of doing that would be to write 4 grep commands (one for each of the `book_id`s),
 using output redirection to concatenate the results together.
+(**You don't need to run these commands.**)
 ```
 $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | grep '"book_id": "17353642"' >> reviews-notw.json
 $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | grep '"book_id": "18741780"' >> reviews-notw.json
@@ -366,8 +373,6 @@ $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | grep '"book_id": "
 ```
 But this is inefficient because each of these commands loops over the dataset separately,
 and it's awkward to have to manually repeat all of these commands.
-**You don't need to run the commands above.
-The next paragraphs will introduce a more efficient method for getting the same answer.**
 
 It is more efficient to take advantage of `grep`'s regular expression ability to combine all of our search criteria into a single regex, and a single call to `grep`.
 We'll use regular expression [alternations](https://www.regular-expressions.info/alternation.html).

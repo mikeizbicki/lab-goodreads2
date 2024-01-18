@@ -305,7 +305,7 @@ Consider the following command.
 $ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"title": "The Name of the Wind"' | wc -l
 ```
 This counts all of the entries in the `goodreads_books.json.gz` file with a `title` field equal to `The Name of the Wind`.
-It turns out that there are 4 different entries in `goodreads_books.json.gz` for the title `*The Name of the Wind*, each with their own `book_id`.
+It turns out that there are 4 different entries in `goodreads_books.json.gz` for the title *The Name of the Wind*, each with their own `book_id`.
 These 4 entries correspond to different editions of the book (there's a hardcover, a softcover, an audiobook, and a "Tenth Anniversary Edition" hardcover).
 
 Our command to count the number of entries took a long time to run because it needed to loop over the entire dataset.

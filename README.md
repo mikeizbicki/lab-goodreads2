@@ -67,14 +67,18 @@ You should have written a command that looks something like:
 $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | wc -l
 15739967
 ```
-That's 15.7 million reviews that we'll need to sort through to create our review summarizer.
+That's 15.7 million reviews.
+
+We won't want to be passing all of these reviews into an AI model at once.
+Instead, we'll need to search through these 15.7 million reviews to find just the subset of reviews about the book we're writing a summary for.
 
 ### Part 0.c: Inspect the Data
 
 The most important task when confronting any new file is to manually inspect your file.
 I've too many students (and professional data scientists!) skip this step.
 This results in them writing code for data that they don't understand,
-which makes the code not work.
+which makes the code not work,
+which means they've wasted hours of work.
 SO ALWAYS MANUALLY INSPECT YOUR DATA BEFORE DOING ANY ANALYSIS!!!
 
 Recall that we saw before how to use the `zcat` and `head` commands to manually view the first few lines of a csv file.
@@ -87,7 +91,7 @@ $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | head
 ```
 You should get a huge wall of text that is difficult to read.
 
-In order to understand this file better,
+In order to understand this data better,
 we'll need to clean up the output a bit using two new techniques:
 
 1. Passing the `-n1` parameter to the head command.
@@ -121,8 +125,7 @@ The JSON object above represents the first review in our dataset.
 This object contains a variety of information about the review,
 but notice that the title of the book is not stored in the JSON object.
 The only information we have about the book is the `book_id` field.
-
-The file `goodreads_books.json.gz` associates each `book_id` with information about the book, like the title, author, and publication year.
+A different file `goodreads_books.json.gz` associates each `book_id` with information about the book, like the title, author, and publication year.
 <!--
 Storing this information in a separate file is called *normalizing* the dataset.
 We will talk later in this class about the various advantages of normalizing and denormalizing datasets,

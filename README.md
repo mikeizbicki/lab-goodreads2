@@ -138,7 +138,7 @@ we will have to *join* the `goodreads_reviews_dedup.json.gz` and `goodreads_book
 Joining datasets is a notoriously difficult and time consuming process.
 We will spend a considerable amount of time in this class discussing how to join correctly and efficiently.
 For this lab, we will use a simple, manual, and slow method.
-(Later in the course, we'll learn more complicated, automatic, and faster methods.)
+Later in the course, we'll learn more complicated, automatic, and faster methods.
 
 ## Part 1: Convert a book id into a title.
 
@@ -221,7 +221,7 @@ You should see a large number of JSON fields,
 but for our purposes the most important are the `title` and `book_id` fields.
 In order to find the title of the book that corresponds to the book review we found above,
 we need to search through the entire `goodreads_books.json.gz` file for a line with the appropriate `book_id` and extract the `title` field from this entry.
-We will use the `grep` tool to search and the `jq` tool to extract.
+We will use the `grep` tool to search and a new command `jq` to extract.
 
 ### Part 1.a: Searching with `grep`
 
@@ -245,15 +245,17 @@ then we will search through `goodreads_reviews_dedup.json.gz` to find the corres
 It takes a regular expression as a command line argument,
 and removes all lines in its input that don't satisfy that regular expression.
 In order to find the book with id `24375664`,
-we will use the following regular expression to match the way this information is stored in the JSON object:
-```
-"book_id": "24375664"
-```
+we will use the following regular expression to match the way this information is stored in the JSON object: `"book_id": "24375664"`.
 The final incantation is
 ```
 $ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"book_id": "24375664"'
 ```
 The command above should output a very large JSON object.
+
+> **NOTE:**
+>
+> Pay close attention to the quotation marks in the previous paragraph.
+> Since the regex contains a space, it must be enclosed in quotation marks for the entire regex to be considered a single parameter to `grep`.
 
 > **Note:**
 >
@@ -291,18 +293,10 @@ In the previous sections, we saw how to extract a review from `goodreads_reviews
 What we're really interested in, however, is going in the opposite direction.
 We need to start with a title, and then find all of the reviews for that title.
 This will turn out to be quite a bit trickier due to some messiness in the data.
+As a running example, we will use the best selling fantasy novel *The Name of the Wind* (NOTW for short).
 
-First, we'll see that there are multiple `book_id`s for each title.
-Then we'll see how to perform out join using multiple `book_id`s.
-
-<!--
-The difficulty is that there are many `book_id`s that correspond to the same title.
-This is because the same book can have many editions (e.g. hardcover, softcover, audiobook, collector's edition, foreign language editions, etc.),
-and partly due to inconsistencies in how the data was entered.
-
-$ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"title": "The Name of the Wind'
-Consider the following two commands.
--->
+First, we'll see that there are multiple `book_id`s for NOTW.
+Then we'll see how to perform our join using multiple `book_id`s at once.
 
 ### Part 2.a: Getting the `book_id`(s) for our Title
 
@@ -313,17 +307,6 @@ $ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"title": "The Name o
 This counts all of the entries in the `goodreads_books.json.gz` file with a `title` field equal to `The Name of the Wind`.
 It turns out that there are 4 different entries in `goodreads_books.json.gz` for the title `*The Name of the Wind*, each with their own `book_id`.
 These 4 entries correspond to different editions of the book (there's a hardcover, a softcover, an audiobook, and a "Tenth Anniversary Edition" hardcover).
-
-<!--
-> **NOTE:**
->
-> Pay close attention to the quotation marks in the previous paragraph.
-> We pass the string `'"title": "The Name of the Wind"' to the `grep` command (with single quotes `'`),
-> and it finds lines containing the string `"title": "The Name of the Wind"` (without single quoates `'`).
-> 
-> Recall that `grep` works only at the text level and does not understand the json semantics.
-> Our query string above is designed to find the key `title` with the value `The Name of the Wind`.
--->
 
 Our command to count the number of entries took a long time to run because it needed to loop over the entire dataset.
 To save time in the future, it is often good practice to store the results of intermediate steps into a file.

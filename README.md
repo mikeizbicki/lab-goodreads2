@@ -83,7 +83,7 @@ Instead, we'll need to search through these 15.7 million reviews to find just th
 ### Part 0.c: Inspect the Data
 
 The most important task when confronting any new file is to manually inspect your file.
-I've too many students (and professional data scientists!) skip this step.
+I've seen too many students (and professional data scientists!) skip this step.
 This results in them writing code for data that they don't understand,
 which makes the code not work,
 which means they've wasted hours of work.

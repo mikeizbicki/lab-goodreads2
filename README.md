@@ -332,7 +332,7 @@ $ cat notw.json | wc -l
 And we can do other processing on these books much more efficiently.
 For example, we can extract the title from each of these books with the command
 ```
-$ cat notw.json | jq '.title'
+$ cat books-notw.json | jq '.title'
 "The Name of the Wind"
 "The Name of the Wind"
 "The Name of the Wind"
@@ -341,12 +341,12 @@ $ cat notw.json | jq '.title'
 Notice that they are all the same and match our regex.
 The differences between each entry are in the `format` and `edition_information` fields:
 ```
-$ cat notw.json | jq '.format'
+$ cat books-notw.json | jq '.format'
 "Audio"
 "Paperback"
 "Hardcover"
 "Hardcover"
-$ cat notw.json | jq '.edition_information'
+$ cat books-notw.json | jq '.edition_information'
 ""
 ""
 ""
@@ -354,7 +354,7 @@ $ cat notw.json | jq '.edition_information'
 ```
 And each entry has a different `book_id` field:
 ```
-$ cat notw.json | jq '.book_id'
+$ cat books-notw.json | jq '.book_id'
 "17353642"
 "18741780"
 "12276953"

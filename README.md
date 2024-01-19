@@ -26,6 +26,14 @@ https://datarepo.eng.ucsd.edu/mcauley_group/gdrive/goodreads/goodreads_reviews_d
 
 ## Part 0: Exploring the reviews.
 
+You will be creating many large files in this lab.
+Run the following command
+```
+$ cd ~/bigdata
+```
+to enter your `bigdata` folder.
+You have 250GB of space allocated to you under this folder.
+
 In this lab, we're going to dive right into the full dataset.
 The file `/data-fast/goodreads/goodreads_reviews_dedup.json.gz` contains the full set of reviews.
 Whenever you're working with a new file,

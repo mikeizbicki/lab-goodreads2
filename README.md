@@ -533,7 +533,7 @@ The Claremont Colleges have a very fast internet connection,
 but your laptops are limited by wifi bandwidth and so can only achieve about 1MB/s downloads.
 The lambda server, in contrast, is connected by physical fiber optic cables to the internet.
 
-LLMs are in general very large.
+LLMs use a lot of disk space.
 ```
 $ du -h mistral-7b-instruct-v0.2.Q5_K_M.llamafile
 4.9G	mistral-7b-instruct-v0.2.Q5_K_M.llamafile
@@ -581,12 +581,16 @@ You should see a large amount of debug output, followed by en explanation of why
 
 > **Computational Note:**
 >
-> The command above is extremely compute intensive and will max out the lambda server's CPU usage.
+> The command above is extremely compute intensive.
+> All of the previous commands that you've run have only used a single processor,
+> and therefore they will take the same amount of time no matter how many people are using the lambda server.
+> The mistral command, however, is highly parallel and will use all available compute resources on the lambda server (80 CPUs).
 > The command took me 30 seconds to complete when the lambda server was completely idle,
 > and will take longer as the lambda server comes under load.
 > The overall runtime will be proportional to the number of students currently running the command,
 > so if 10 students are running the command,
 > expect it to take about 300 seconds to complete.
+>
 > Subsequent steps for this lab do not depend on the output of the command above,
 > so you can stop the command early (by pressing `CTRL-C`) if you'd like.
 

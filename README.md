@@ -376,7 +376,7 @@ and it's awkward to have to manually repeat all of these commands.
 
 It is more efficient to take advantage of `grep`'s regular expression ability to combine all of our search criteria into a single regex, and a single call to `grep`.
 We'll use regular expression [alternations](https://www.regular-expressions.info/alternation.html).
-Recall that an alternation is expressed syntactically with the pipe operator `|` but has the semantic meaning of "or" inside of a regular expression.
+Recall that an alternation is expressed syntactically with the pipe character `|` but has the semantic meaning of "or" inside of a regular expression.
 Thus, the regular expression
 ```
 "17353642"|"18741780"|"12276953"|"34347493"
@@ -442,7 +442,7 @@ Hmmm... that's not a lot of reviews...
 14 reviews seems WAY too few.
 
 What happened is that there are many more `book_id`s that correspond to *The Name of The Wind* that we didn't find.
-It turns out that the `title` field inside of the `goodreads_books.json.gz` dataset is not guaranteed to be *equal* to the title of the book, like we assumed above.
+It turns out that the `title` field inside of the `goodreads_books.json.gz` dataset is not guaranteed to be *equal* to the title of the book, like we implicitly assumed above.
 Instead, the `title` field is only guaranteed to *begin* with the title of the book.
 It is allowed to contain extra information about the book after the title.
 Therefore, when searching for a book, we do not want to perform an exact match against the book title.
@@ -478,7 +478,7 @@ $ cat books-notw-full.json | jq '.edition_information'
 >
 > Repeat the join process from Part 2.b with the new set of 35 `book_id`s we found above,
 > and store the reviews in a file `reviews-notw-full.json`.
-> (You may find the note at the end of Part 2.b particularly helpful.)
+> You may (or may not) find the note at the end of Part 2.b helpful.
 >
 > Then do a sanity check of counting the number of reviews you found.
 > You know you did everything correctly if you get a number a bit less than 6000.
@@ -491,46 +491,48 @@ $ wc -l reviews-notw-full.json
 
 You won't be able to complete the next section until you've completed the exercise above.
 
-## Part 3: Generating the Review Summaries
+## Part 3: Working with AI
 
-*This section to be added later.*
+Now that we have our short list of reviews for a particular title,
+it will be easy to pass these reviews to an AI tool for summary.
 
-<!--
-The Mistral Large Language Models
-
-Modern AIs like ChatGPT are more generally called *large language models* or *LLMs*.
-In this section we will see how to programmatically use these LLMs.
-Then in the next section we will combine these LLMs with the reviews extracted in the previous sections.
-
-### Part 3.a: Using LLMs from the Command Line
-
+Modern AIs like ChatGPT are more technically called *large language models* or *LLMs*.
 There are many ways to interact with LLMs.
 You've probably in the past used web interfaces like <https://chat.openai.com> or <https://bard.google.com/>.
-These web interfaces are easy for human interaction, but hard for programs to use,
+These web interfaces are easy for human interaction,
+but hard for programs to use,
 and so many API toolkits have been developed to interact with these systems from python.
-These APIs are still awkward to use for a variety of reasons,
-and so in this lab we will be using a command line interface called [llamafile](https://github.com/Mozilla-Ocho/llamafile).
-Llamafile is a project developed by Mozilla (the non-profit best known for developing firefox).
+These APIs are still non-trivial to use, so we won't use them in this lab.
+Instead, we will be using a commandline interface called [llamafile](https://github.com/Mozilla-Ocho/llamafile).
+
+Llamafile is an open source project developed by Mozilla (the non-profit best known for developing firefox).
+It is a fairly recent project, having only been [announced in November 2023](https://hacks.mozilla.org/2023/11/introducing-llamafile/).
 The idea of llamafile is that every LLM can be packaged as a single, standalone executable file that can easily be combined with other unix processes using pipes.
+With llamafiles, using LLMs from the shell is trivial.
 
-**FIXME**
-You can find more examples of cool uses of llamafiles at the [developer's webpage](https://justine.lol/oneliners/).
+We'll first see how to download/use a llamafile,
+then we'll combine it with our dataset to generate our review summaries.
 
-In unix, text is the universal interface, and the [unix philosophy](http://www.catb.org/~esr/writings/taoup/html/ch01s06.html) is that all programs should be written to accept text as input and write text as output.
+> **Note:**
+>
+> You can find lots of examples of cool uses of llamafiles at the [developer's webpage](https://justine.lol/oneliners/).
 
 ### Part 3.a: Getting the Llamafile
 
-Get started by using the `wget` command to download the Mistral LLM llamafile:
+There are many different LLMs to choose from,
+and each has a different llamafile.
+For this project we'll use the [Mistral LLM](https://mistral.ai/news/announcing-mistral-7b/).
+This is a popular LLM because it is open source (Apache 2.0 license) and has a good balance of output quality and speed.
 
-```bash
+Get started by using the `wget` command to download the Mistral LLM llamafile:
+```
 $ wget 'https://huggingface.co/jartine/Mistral-7B-Instruct-v0.2-llamafile/resolve/main/mistral-7b-instruct-v0.2.Q5_K_M.llamafile'
 ```
-
 You should be averaging speeds over 150MB/s.
 The Claremont Colleges have a very fast internet connection,
 and your normal download speeds on your laptops are limited by the wifi bandwidth to only about 1MB/s.
-The lambda server, however, connected by physical ethernet cables to the campus network and so is not limited by wifi bandwidth.
-This is another reason to prefer working on remote computers whenever possible.
+The lambda server, however, is connected by physical fiber optic cables to the internet,
+and so it is not limited by wifi bandwidth.
 
 ### Part 3.b: Running the LLamafile
 
@@ -554,12 +556,14 @@ You should get a large amount of debugging output followed by the line
 llama server listening at http://127.0.0.1:8080
 ```
 By default, llamafile provides a web interface for interacting with the LLM.
-But we won't be using that interface, and will instead use the command line interface.
+But we won't be using that interface,
+and will instead use the command line interface.
 
 Press `CTRL-C` to end the program and return to the command prompt.
 
 We can pass the `-f` flag to our llamafile in order to specify that the input should come from a file instead of the web interface.
-We will use the special file `/dev/stdin` to enable piping into the llamafile.
+We will combing `-f` with the special file `/dev/stdin` to enable piping into the llamafile.
+Here's an example command:
 ```
 $ echo "[INST]Write 1 paragraph explaining why the shell is important for big data.[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin
 ```
@@ -584,27 +588,63 @@ is called the *prompt* for our large language model.
 The prompt provides natural language instructions for what the model should do.
 [The Mistral website](https://www.promptingguide.ai/models/mistral-7b#mistral-7b-instruct) has guidelines for how to write good prompts,
 but this is still an active area of research.
+The most important thing is that the prompt should be surrounded by the `[INST]` and `[/INST]` tags
+and contain instructions on what the AI should attempt to do.
 
-### Part 2.c: Putting it all together
+### Part 3.c: Writing our Prompt
 
-We're finally ready to generate the AI summary of our book reviews.
-All we have to do is (1) write prompt telling the AI what to summarize,
-and (2) use the shell to pass that to our LLM.
+Our next step is to prepare a prompt for the LLM.
+We will use a multi-line string with command substition.
 
-I recommend using the following prompt:
+Run the following command.
 ```
-[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book.
+$ echo "[INST]
+hello world
+[/INST]"
+```
+Notice that the shell allows multiline strings.
+Depending on your shell's settings, you may see a `>` symbol prompting you at the beginning of each line of the string.
+These `>` prompts are customarily not provided in tutorials because they make copy/pasting more difficult.
+
+Now we will introduce command substition.
+Run the following command.
+```
+$ echo "[INST]
+$(echo hello world)
+[/INST]"
+```
+You should get the same output as the previous command.
+The `$( ... )` syntax is called *command substituion*.
+When the shell encounters this syntax, it runs the command within the parentheses (in this case `echo hello world`),
+and places the output of that command (in this case `hello world`) within the string.
+
+We can now use command substitution to build our prompt.
+One possible prompt could look like
+```
+$ echo "[INST]
+Write 1 short paragraph that combines all of the following book reviews into a single summary of the book.
 The reviews are:
-$(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')
+$(cat ./reviews-notw-full.json | jq '.review_text')
 [/INST]
+"
 ```
-The purpose of the `head -n20` command above is purely computational.
-Changing the 20 to a larger number will result in a better summary that incorporates more reviews,
-but at the expense of a longer runtime.
-With 20 reviews, the command takes me 4 minutes to run on an un-loaded llambdaserver.
+
+This prompt will work, but it is very long because we have so many reviews.
+LLMs are notoriously computationally expensive, and so we will get results faster if we use only a small sample of the reviews.
+
+> **Exercise:**
+> 
+> Modify the `echo` command that generates the prompt so that only 20 reviews are used in the prompt.
+> You will have to use the `head` command with the `-n` parameter.
 
 ## Submission
--->
+
+Write a 1-line shell command that will output a summary of the reviews.
+You should pipe the output of the echo command you wrote in Part 3.c above to the mistral llamafile.
+Paste both your command and its output into sakai.
+
+My command took about 4 minutes to run when the lambda server was under no load.
+With the lambdaserver under load, your command might take up to several hours to run.
 
 <!--
 $ echo "[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book. The reviews are: $(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin

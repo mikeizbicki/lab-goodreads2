@@ -524,15 +524,25 @@ and each has a different llamafile.
 For this project we'll use the [Mistral LLM](https://mistral.ai/news/announcing-mistral-7b/).
 This is a popular LLM because it is open source (Apache 2.0 license) and has a good balance of output quality and speed.
 
-Get started by using the `wget` command to download the Mistral LLM llamafile:
+Get started by using the `wget` command to download the Mistral LLM llamafile.
 ```
 $ wget 'https://huggingface.co/jartine/Mistral-7B-Instruct-v0.2-llamafile/resolve/main/mistral-7b-instruct-v0.2.Q5_K_M.llamafile'
 ```
 You should be averaging speeds over 150MB/s.
 The Claremont Colleges have a very fast internet connection,
-and your normal download speeds on your laptops are limited by the wifi bandwidth to only about 1MB/s.
-The lambda server, however, is connected by physical fiber optic cables to the internet,
-and so it is not limited by wifi bandwidth.
+but your laptops are limited by wifi bandwidth and so can only achieve about 1MB/s downloads.
+The lambda server, in contrast, is connected by physical fiber optic cables to the internet.
+
+LLMs are in general very large.
+```
+$ du -h mistral-7b-instruct-v0.2.Q5_K_M.llamafile
+4.9G	mistral-7b-instruct-v0.2.Q5_K_M.llamafile
+```
+When loaded into memory,
+this model takes just a bit less than 16GB of ram to run.
+LLMs are also notoriously slow computationally and cannot be reasonably run on most laptops.
+
+The llambda server, however, is more powerful than your laptop and can generate text from these models in essentially real time.
 
 ### Part 3.b: Running the LLamafile
 

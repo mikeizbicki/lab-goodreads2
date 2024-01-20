@@ -326,7 +326,7 @@ $ zcat /data-fast/goodreads/goodreads_books.json.gz | grep '"title": "The Name o
 ```
 Now we can quickly count the number of books:
 ```
-$ cat notw.json | wc -l
+$ cat books-notw.json | wc -l
 4
 ```
 And we can do other processing on these books much more efficiently.

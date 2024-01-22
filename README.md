@@ -616,7 +616,7 @@ and contain instructions on what the AI should attempt to do.
 ### Part 3.c: Writing our Prompt
 
 Our next step is to prepare a prompt for the LLM.
-We will use a multi-line string with command substition.
+We will use a multi-line string with command substitution.
 
 Run the following command.
 ```
@@ -628,7 +628,7 @@ Notice that the shell allows multiline strings.
 Depending on your shell's settings, you may see a `>` symbol prompting you at the beginning of each line of the string.
 These `>` prompts are customarily not provided in tutorials because they make copy/pasting more difficult.
 
-Now we will introduce command substition.
+Now we will introduce command substitution.
 Run the following command.
 ```
 $ echo "[INST]
@@ -636,7 +636,7 @@ $(echo hello world)
 [/INST]"
 ```
 You should get the same output as the previous command.
-The `$( ... )` syntax is called *command substituion*.
+The `$( ... )` syntax is called *command substitution*.
 When the shell encounters this syntax, it runs the command within the parentheses (in this case `echo hello world`),
 and places the output of that command (in this case `hello world`) within the string.
 

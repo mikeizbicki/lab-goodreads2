@@ -580,7 +580,7 @@ and will instead use the command line interface.
 Press `CTRL-C` to end the program and return to the command prompt.
 
 We can pass the `-f` flag to our llamafile in order to specify that the input should come from a file instead of the web interface.
-We will combing `-f` with the special file `/dev/stdin` to enable piping into the llamafile.
+We will be combining `-f` with the special file `/dev/stdin` to enable piping into the llamafile.
 Here's an example command:
 ```
 $ echo "[INST]Write 1 paragraph explaining why the shell is important for big data.[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin
@@ -666,7 +666,7 @@ You should pipe the output of the echo command you wrote in Part 3.c above to th
 Paste both your command and its output into sakai.
 
 My command took about 4 minutes to run when the lambda server was under no load.
-With the lambdaserver under load, your command might take up to several hours to run.
+With the lambda server under load, your command might take up to several hours to run.
 
 <!--
 $ echo "[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book. The reviews are: $(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin

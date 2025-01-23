@@ -399,6 +399,13 @@ $ zcat /data-fast/goodreads/goodreads_reviews_dedup.json.gz | grep -E '"17353642
 The file `reviews-notw.json` now contains the output of our join.
 
 > **Note:**
+>
+> Programmers have a culture of speaking with precision,
+> and I have used precise language above which I want to call to your attention.
+> Observe that the regular expression is `"17353642"|"18741780"|"12276953"|"34347493"` (without single quotes), and the argument being passed to grep is `'"17353642"|"18741780"|"12276953"|"34347493"'` (with single quotes).
+> We need single quotes around the regex to create the argument so that the `|` operator is not interpreted as a pipe by the shell but gets passed to grep.
+
+> **Note:**
 > 
 > Manually generating the regex, then copy/pasting it into our shell command is a bit awkward when the number of `book_id`s is large.
 > In this note, we'll see how to automate that process.
@@ -504,13 +511,49 @@ You won't be able to complete the next section until you've completed the exerci
 Now that we have our short list of reviews for a particular title,
 it will be easy to pass these reviews to an AI tool for summary.
 
-Modern AIs like ChatGPT are more technically called *large language models* or *LLMs*.
-There are many ways to interact with LLMs.
-You've probably in the past used web interfaces like <https://chat.openai.com> or <https://bard.google.com/>.
-These web interfaces are easy for human interaction,
-but hard for programs to use,
-and so many API toolkits have been developed to interact with these systems from python.
-These APIs are still non-trivial to use, so we won't use them in this lab.
+> **Note:**
+>
+> If you do not already have the llm tool setup, then follow the instructions at <https://github.com/mikeizbicki/lab-llm>.
+
+Our first step is [prompt engineering](https://platform.openai.com/docs/guides/prompt-engineering), which is just writing out in plain English instructions what we want the LLM to do.
+The following command will output a reasonable prompt to your terminal.
+```
+$ echo "Write a short 2-3 sentence summary of the following book reviews. The reviews are: $(cat ./reviews-notw-full.json | jq '.review_text')"
+```
+Now we can use the pipe to pass this prompt to our llm with a command like
+```
+$ echo "Write a short 2-3 sentence summary of the following book reviews. The reviews are: $(cat ./reviews-notw-full.json | jq '.review_text')" | llm
+```
+This command should give you an error that looks something like
+```
+Error: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-70b-versatile` in organization `org_01j5vb7h4tfz0tgw7e6vxfj3er` service tier `on_demand` on : Limit 200000, Requested 1155360, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.', 'type': '', 'code': 'rate_limit_exceeded'}}
+```
+This is because your prompt is too large.
+Let's use the `wc` command to see how large the prompt is.
+```
+$ echo "Write a short 2-3 sentence summary of the following book reviews. The reviews are: $(cat ./reviews-notw-full.json | shuf | jq '.review_text')" | wc
+   5992  844126 4621422
+```
+The first number above is the number of lines;
+the second is the number of words;
+and the third is the number of characters.
+(Recall that we previously used `wc -l` to count the number of lines, which outputs only the first number above.)
+
+The Groq API currently limits requests to be only 8096 tokens in length.
+Tokens are semantically meaningful parts of words,
+and so the number of words is a lower bound on the number of tokens.
+We are clearly above this threshold, and so we need to truncate our text to fit the threshold before passing it to the LLM.
+
+> **Exercise:**
+> 
+> Modify the command above so that it selects only 20 reviews to pass to the llm.
+> You can use the `head` command with the `-n` parameter.
+
+<!--
+$ echo "Write a short 2-3 sentence summary of the following book reviews. The reviews are: $(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')" | llm
+-->
+
+<!--
 Instead, we will be using a commandline interface called [llamafile](https://github.com/Mozilla-Ocho/llamafile).
 
 Llamafile is an open source project developed by Mozilla (the non-profit best known for developing firefox).
@@ -658,33 +701,88 @@ LLMs are notoriously computationally expensive, and so we will get results faste
 > 
 > Modify the `echo` command that generates the prompt so that only 20 reviews are used in the prompt.
 > You will have to use the `head` command with the `-n` parameter.
+-->
+
+## Part 4: Creating a Shell Script
+
+Our goal in this section is to combine everything together into a convenient script that will generate summaries.
+
+### Part 4.a: Shell Scripting Basics
+
+Use Vim to create a file `summarize_reviews.sh` that contains the following contents.
+```
+#!/bin/sh
+echo "book to summarize is: $1"
+```
+This file is called a *shell script*,
+and it can be run with the `sh` program:
+```
+$ sh summarize_reviews.sh
+book to summarize is:
+```
+Notice that the `$1` variable contains no text,
+and so nothing is output to the screen.
+
+`$1` is a special variable that is set automatically by the `sh` program when it runs a shell script,
+and it contains the first parameter to the program.
+If you rerun the command with the name of a book as a parameter,
+then the shell script will print the name of the book:
+```
+$ sh summarize_reviews.sh "Name of the Wind"
+book to summarize is: Name of the Wind
+```
+Notice that quotation marks are necessary in order for the entire book name to be interpretted as a single parameter.
+```
+$ sh summarize_reviews.sh "Name of the Wind"
+book to summarize is: Name
+```
+
+> **Exercise:**
+>
+> Modify `summarize_reviews.sh` so that it returns a summary of the reviews for whatever book the user passes in as an argument.
+> You should verify that your program works by running 
+> ```
+> $ sh summarize_reviews.sh "Name of the Wind"
+> ```
+> and verifying that you continue to get similar results as before.
+> The results won't be exactly the same because the `llm` command is non-deterministic.
+
+### Part 4.b: Cleaning up the Results
+
+Your shell script from part 4.a likely created a number of files to store intermediate results.
+It is annoying to have these intermediate files "polute" your current working directory,
+And so it is common practice to store these files in a temporary directory.
+
+This is easy to do in a shell script by putting the following commands at the top of your script.
+```
+tempdir=$(mktemp -d)
+cd "$tempdir"
+```
+The `mkdtemp -d` command creates a temporary folder and outputs the name of this folder to stdout.
+The `cd` command then changes the working directory to this folder,
+so all subsequently created files will be in this temporary folder instead of the folder you ran the command from.
+
+These temporary folders are located in the `/tmp` directory of the computer,
+which are regularly deleted.
+It is still polite, however, to automatically clean up your temporary folder at the end of your shell script with a command like
+```
+rm -rf "$tempdir"
+```
+
+> **Exercise:**
+>
+> Modify your shell script form Part 4.a so that it does not create any intermediate files in the folder the user called it from.
 
 ## Submission
 
-Write a 1-line shell command that will output a summary of the reviews.
-You should pipe the output of the echo command you wrote in Part 3.c above to the mistral llamafile.
-Paste both your command and its output into sakai.
-
-My command took about 4 minutes to run when the lambda server was under no load.
-With the lambda server under load, your command might take up to several hours to run.
-
-<!--
-$ echo "[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book. The reviews are: $(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin
-
-$ ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin <<EOF
-[INST]Write 1 short paragraph that combines all of the following book reviews into a single summary of the book. The reviews are:
-$(cat ./reviews-notw-full.json | head -n20 | jq '.review_text')
-[/INST]"
-EOF
--->
-
-<!--
+Run the following commands in a terminal session to summarize the reviews of some classic CMC books.
+Copy/paste the commands and output into sakai.
 ```
-$ echo "[INST]This prompt contains several book reviews in JSON format. Write a short 1 paragraph summary that combines all of these reviews into a single summary of the book. $(cat ./notw.reviews.json | head -n20 | jq '.review_text')[/INST]"
+$ cat summarize_reviews.sh
+$ sh summarize_reviews.sh "Wealth of Nations"
+$ sh summarize_reviews.sh "Democracy in America"
 ```
-Notice how I used command substitution to extract a subset of the reviews and 
-
-```
-$ echo "[INST]This prompt contains several book reviews in JSON format. Write a short 1 paragraph summary that combines all of these reviews into a single summary of the book. $(cat ./notw.reviews.json | tail -n10 )[/INST]" | ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -f /dev/stdin -c 0
-$ ./mistral-7b-instruct-v0.2.Q5_K_M.llamafile -p "[INST]Write a short summary of the following book reviews: $(cat ./notw.reviews.json | jq '.review_text' | tail -n10 )[/INST]" -c 0
--->
+Like in the first part of this lab, these commands take a long time to run.
+The majority of the time is not spent in the LLM,
+but in finding the data that goes into the LLM.
+By the end of the course, you will be able to create systems that do this in milliseconds.

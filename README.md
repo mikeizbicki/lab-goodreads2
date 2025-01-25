@@ -733,7 +733,7 @@ book to summarize is: Name of the Wind
 ```
 Notice that quotation marks are necessary in order for the entire book name to be interpretted as a single parameter.
 ```
-$ sh summarize_reviews.sh "Name of the Wind"
+$ sh summarize_reviews.sh Name of the Wind
 book to summarize is: Name
 ```
 

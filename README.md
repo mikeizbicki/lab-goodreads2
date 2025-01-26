@@ -771,7 +771,7 @@ rm -rf "$tempdir"
 
 > **Exercise:**
 >
-> Modify your shell script form Part 4.a so that it does not create any intermediate files in the folder the user called it from.
+> Modify your shell script from Part 4.a so that it does not create any intermediate files in the folder the user called it from.
 
 ## Submission
 

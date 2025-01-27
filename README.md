@@ -728,13 +728,13 @@ and it contains the first parameter to the program.
 If you rerun the command with the name of a book as a parameter,
 then the shell script will print the name of the book:
 ```
-$ sh summarize_reviews.sh "Name of the Wind"
-book to summarize is: Name of the Wind
+$ sh summarize_reviews.sh "The Name of the Wind"
+book to summarize is: The Name of the Wind
 ```
 Notice that quotation marks are necessary in order for the entire book name to be interpretted as a single parameter.
 ```
-$ sh summarize_reviews.sh Name of the Wind
-book to summarize is: Name
+$ sh summarize_reviews.sh The Name of the Wind
+book to summarize is: The
 ```
 
 > **Exercise:**
@@ -742,7 +742,7 @@ book to summarize is: Name
 > Modify `summarize_reviews.sh` so that it returns a summary of the reviews for whatever book the user passes in as an argument.
 > You should verify that your program works by running 
 > ```
-> $ sh summarize_reviews.sh "Name of the Wind"
+> $ sh summarize_reviews.sh "The Name of the Wind"
 > ```
 > and verifying that you continue to get similar results as before.
 > The results won't be exactly the same because the `llm` command is non-deterministic.

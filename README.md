@@ -750,7 +750,7 @@ book to summarize is: Name
 ### Part 4.b: Cleaning up the Results
 
 Your shell script from part 4.a likely created a number of files to store intermediate results.
-It is annoying to have these intermediate files "polute" your current working directory,
+It is annoying to have these intermediate files "pollute" your current working directory,
 And so it is common practice to store these files in a temporary directory.
 
 This is easy to do in a shell script by putting the following commands at the top of your script.

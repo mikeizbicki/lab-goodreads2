@@ -779,7 +779,7 @@ Run the following commands in a terminal session to summarize the reviews of som
 Copy/paste the commands and output into sakai.
 ```
 $ cat summarize_reviews.sh
-$ sh summarize_reviews.sh "Wealth of Nations"
+$ sh summarize_reviews.sh "The Wealth of Nations"
 $ sh summarize_reviews.sh "Democracy in America"
 ```
 Like in the first part of this lab, these commands take a long time to run.

@@ -790,7 +790,7 @@ rm -rf "$tempdir"
 ## Submission
 
 Run the following commands in a terminal session to summarize the reviews of some classic CMC books.
-Copy/paste the commands and output into sakai.
+Copy/paste the commands and output into canvas.
 ```
 $ cat summarize_reviews.sh
 $ sh summarize_reviews.sh "The Wealth of Nations"

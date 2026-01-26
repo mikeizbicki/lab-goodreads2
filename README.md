@@ -1,11 +1,11 @@
 # Lab: AI Review Summaries
 
 Amazon recently launched a new service where [AI models summarize product reviews](https://www.aboutamazon.com/news/amazon-ai/amazon-improves-customer-reviews-with-generative-ai).
+In this lab, you will create your own version of this service.
 For example, here's the AI generated review for [this package of uranium ore](https://www.amazon.com/dp/B000796XXM):
 
 <img src=img/amazon-review-uranium.png width=100%>
 
-In this lab, you will create your own version of this service.
 You will use AI to summarize book reviews from the website <https://www.goodreads.com/>.
 We'll use [a public dataset](https://mengtingwan.github.io/data/goodreads.html) that contains all activity on this website between 2006-2017.
 It's approximately 30GB of data, and contains 15.7 million user reviews of 2.3 million books.
@@ -733,7 +733,7 @@ then the shell script will print the name of the book:
 $ sh summarize_reviews.sh "The Name of the Wind"
 book to summarize is: The Name of the Wind
 ```
-Notice that quotation marks are necessary in order for the entire book name to be interpretted as a single parameter.
+Notice that quotation marks are necessary in order for the entire book name to be interpreted as a single parameter.
 ```
 $ sh summarize_reviews.sh The Name of the Wind
 book to summarize is: The
@@ -783,7 +783,7 @@ rm -rf "$tempdir"
 >
 > In the past 3 years, I've had about 10 companies/students/other professors come to me after they've spent >50 hours vibecoding a crappy rag system that doesn't work.
 > Then I start up my bash shell and implement an actually working rag system that solves their business problem in <10 minutes.
-> Thus is the power of the shell.
+> This is the power of the shell.
 >
 > <img src=img/power.jpg width=300px />
 

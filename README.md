@@ -733,7 +733,7 @@ then the shell script will print the name of the book:
 $ sh summarize_reviews.sh "The Name of the Wind"
 book to summarize is: The Name of the Wind
 ```
-Notice that quotation marks are necessary in order for the entire book name to be interpretted as a single parameter.
+Notice that quotation marks are necessary in order for the entire book name to be interpreted as a single parameter.
 ```
 $ sh summarize_reviews.sh The Name of the Wind
 book to summarize is: The
@@ -783,7 +783,7 @@ rm -rf "$tempdir"
 >
 > In the past 3 years, I've had about 10 companies/students/other professors come to me after they've spent >50 hours vibecoding a crappy rag system that doesn't work.
 > Then I start up my bash shell and implement an actually working rag system that solves their business problem in <10 minutes.
-> Thus is the power of the shell.
+> This is the power of the shell.
 >
 > <img src=img/power.jpg width=300px />
 

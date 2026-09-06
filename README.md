@@ -156,7 +156,7 @@ The first step is to familiarize ourselves with the `goodreads_books.json.gz` fi
 
 > **Exercise:**
 >
-> Recall that three good steps to familiarize yourself with a new file are: (1) check the size of a file, (2) count the number of lines in the file, and (3) and manually inspect that file.
+> Recall that three good steps to familiarize yourself with a new file are: (1) check the size of a file, (2) count the number of lines in the file, and (3) manually inspect that file.
 > Write one line bash commands to complete each of these tasks.
 > You can use the commands from Part 0 above as a guide.
 
@@ -776,7 +776,7 @@ rm -rf "$tempdir"
 > Modify your shell script from Part 4.a so that it does not create any intermediate files in the folder the user called it from.
 
 > **NOTE:**
-> The process of extracting excerts from a large dataset and passing them to an LLM is called *retrieval augmented generation*, or RAG.
+> The process of extracting excerpts from a large dataset and passing them to an LLM is called *retrieval augmented generation*, or RAG.
 > RAG is one of the hottest trends in AI, and can be used to solve most of the major problems with modern LLMS like hallucinations and lack of domain-specific training data.
 >
 > <img src=img/so-hot.jpg width=300px />
@@ -790,7 +790,7 @@ rm -rf "$tempdir"
 ## Submission
 
 Run the following commands in a terminal session to summarize the reviews of some classic CMC books.
-Copy/paste the commands and output into sakai.
+Copy/paste the commands and output into Canvas.
 ```
 $ cat summarize_reviews.sh
 $ sh summarize_reviews.sh "The Wealth of Nations"

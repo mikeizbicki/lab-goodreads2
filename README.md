@@ -518,7 +518,7 @@ it will be easy to pass these reviews to an AI tool for summary.
 > If you do not already have the llm tool setup, then follow the instructions at <https://github.com/mikeizbicki/lab-llm>.
 
 Our first step is [prompt engineering](https://platform.openai.com/docs/guides/prompt-engineering), which is just writing out in plain English instructions what we want the LLM to do.
-The following command will output an unreasonablly long prompt to your terminal.
+The following command will output an unreasonably long prompt to your terminal.
 ```
 $ echo "Write a short 2-3 sentence summary of the following book reviews. The reviews are: $(cat ./reviews-notw-full.json | jq '.review_text')"
 ```
